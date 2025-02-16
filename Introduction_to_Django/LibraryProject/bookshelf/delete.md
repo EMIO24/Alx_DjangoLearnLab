@@ -1,22 +1,23 @@
 
+
 ---
 
-### **`update.md`**
-This file documents the **Update** operation.
+### **`delete.md`**
+This file documents the **Delete** operation.
 
 ```markdown
-# Update Operation
+# Delete Operation
 
 ## Command
 ```python
-from bookshelf.models import Book
+from books.models import Book
 
 # Retrieve the book
-book = Book.objects.get(title="1984")
+book = Book.objects.get(title="Nineteen Eighty-Four")
 
-# Update the title
-book.title = "Nineteen Eighty-Four"
-book.save()
+# Delete the book
+book.delete()
 
-# Output the updated book's details
-print(f"Updated book: {book.title} by {book.author}, published in {book.publication_year}")
+# Confirm deletion by retrieving all books
+books = Book.objects.all()
+print("Books in database:", list(books))
