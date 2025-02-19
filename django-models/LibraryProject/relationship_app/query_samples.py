@@ -20,5 +20,5 @@ def query_books_in_library(library_name):
 
 def query_librarian_for_library(library_name):
     """Retrieve the librarian for a specific library."""
-    Librarian.objects.get(library__name=library_name).first()
+    Librarian.objects.get(library =library_name).first()
     return librarian
