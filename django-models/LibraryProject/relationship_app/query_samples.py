@@ -9,7 +9,7 @@ from relationship_app.models import Author, Book, Library, Librarian
 
 def query_books_by_author(author_name):
     """Query all books by a specific author."""
-    books = Book.objects.filter(author__name=author_name)
+    Author.objects.get(name=author_name).objects.filter(author= author)
     return books
 
 def query_books_in_library(library_name):
