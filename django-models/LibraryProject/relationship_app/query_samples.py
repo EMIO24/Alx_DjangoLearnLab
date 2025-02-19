@@ -15,10 +15,10 @@ def query_books_by_author(author_name):
 
 def query_books_in_library(library_name):
     """List all books in a specific library."""
-    Library.objects.get(library=library_name).books.all()
+    Library.objects.get(name=library_name).books.all()
     return books
 
 def query_librarian_for_library(library_name):
     """Retrieve the librarian for a specific library."""
-    librarian = Librarian.objects.get(library__name=library_name).first()
+    Librarian.objects.get(library__name=library_name).first()
     return librarian
