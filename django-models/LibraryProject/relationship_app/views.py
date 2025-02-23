@@ -1,10 +1,8 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.views.generic.detail import DetailView
 from .models import Library
 from .models import Book
@@ -32,10 +30,24 @@ class LibraryDetailView(DetailView):
         context['books'] = self.object.books.all()  # Access books using the related_name 'books'
         return context
 # Create your views here.
-class SignUpView(CreateView):
-    form_class = UserCreationForm
-    template_name = "register.html"
-    success_url = reverse_lazy("login")  # Redirect to login page after signup
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        confirm_password = request.POST["confirm_password"]
+        
+        if password == confirm_password:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists")
+            else:
+                user = User.objects.create_user(username=username, password=password)
+                user.save()
+                login(request, user)  # Automatically log in the user
+                return redirect("home")  # Redirect to home page
+        else:
+            messages.error(request, "Passwords do not match")
+
+    return render(request,  "relationship_app/register.html")  # Show registration form
     
 def user_login(request):
     if request.method == "POST":
