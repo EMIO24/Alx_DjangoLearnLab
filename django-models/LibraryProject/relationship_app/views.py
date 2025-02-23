@@ -2,7 +2,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth import login
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from .models import Library
 from .models import Book
@@ -34,3 +36,19 @@ class SignUpView(CreateView):
     form_class = UserCreationForm
     template_name = "register.html"
     success_url = reverse_lazy("login")  # Redirect to login page after signup
+    
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)  # Logs the user in
+            return redirect("home")  # Redirect to homepage or dashboard
+        else:
+            return render(request, "login.html", {"error": "Invalid credentials"})
+    
+    return render(request, "login.html")
+
