@@ -65,3 +65,18 @@ def user_login(request):
     
     return render(request, "login.html")
 
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()  # Save user to database
+            login(request, user)  # Log in the user
+            messages.success(request, "Registration successful!")
+            return redirect("home")  # Redirect to home page
+        else:
+            messages.error(request, "Registration failed. Please correct the errors.")
+    else:
+        form = UserCreationForm()
+
+    return render(request, "register.html", {"form": form})
+
