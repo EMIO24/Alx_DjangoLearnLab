@@ -70,7 +70,7 @@ def user_login(request):
 def is_admin(user):
     if user.is_authenticated:
         try:
-            return user.userprofile.role == 'Admin'
+            return user.userprofile.role == "Admin"
         except UserProfile.DoesNotExist:
             return False
     return False
