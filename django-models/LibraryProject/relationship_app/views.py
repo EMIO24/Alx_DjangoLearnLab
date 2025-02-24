@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
 from .models import Library
 from .models import Book
 
@@ -66,25 +67,39 @@ def user_login(request):
     
     return render(request, "login.html")
 
-
-
-def Admin(user):
-    return user.userprofile.role == 'Admin'
-
-@user_passes_test(Admin)
-def admin_view(request):
-    return render(request, 'admin_page.html')
+def is_admin(user):
+    if user.is_authenticated:
+        try:
+            return user.userprofile.role == 'Admin'
+        except UserProfile.DoesNotExist:
+            return False
+    return False
 
 def is_librarian(user):
-    return user.userprofile.role == 'Librarian'
+    if user.is_authenticated:
+        try:
+            return user.userprofile.role == 'Librarian'
+        except UserProfile.DoesNotExist:
+            return False
+    return False
+
+def is_member(user):
+    if user.is_authenticated:
+        try:
+            return user.userprofile.role == 'Member'
+        except UserProfile.DoesNotExist:
+            return False
+    return False
+
+@user_passes_test(is_admin)
+def admin_view(request):
+    return render(request, 'admin_view.html')
 
 @user_passes_test(is_librarian)
 def librarian_view(request):
-    return render(request, 'librarian_page.html')
-
-def is_member(user):
-    return user.userprofile.role == 'Member'
+    return render(request, 'librarian_view.html')
 
 @user_passes_test(is_member)
 def member_view(request):
-    return render(request, 'member_page.html')
+    return render(request, 'member_view.html')
+
