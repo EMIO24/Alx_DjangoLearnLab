@@ -67,10 +67,11 @@ def user_login(request):
     return render(request, "login.html")
 
 
-def is_admin(user):
+
+def Admin(user):
     return user.userprofile.role == 'Admin'
 
-@user_passes_test(is_admin)
+@user_passes_test(Admin)
 def admin_view(request):
     return render(request, 'admin_page.html')
 
