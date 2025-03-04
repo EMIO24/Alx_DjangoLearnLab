@@ -4,6 +4,14 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import Article
+from .models import Book
+
+def book_list(request):
+    books = Book.objects.all() # Retrieve all books from the database
+    context = {
+        'books': books, # Pass the books to the template
+    }
+    return render(request, 'book_list.html', context)
 
 @login_required
 def article_list(request):
