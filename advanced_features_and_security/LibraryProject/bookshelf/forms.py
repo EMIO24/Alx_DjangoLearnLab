@@ -1,7 +1,8 @@
 from django import forms
-from .models import CustomUser  # Import your model
+from .models import ExampleModel  # Import your model
 
-class CustomUserForm(forms.ModelForm):
+class ExampleForm(forms.ModelForm):
     class Meta:
-        model = CustomUser  # Link to your model
-        fields = ['username', 'email', 'password']  # Specify fields to include
+        model = ExampleModel
+        fields = ['name', 'email']  # Include the fields you need
+

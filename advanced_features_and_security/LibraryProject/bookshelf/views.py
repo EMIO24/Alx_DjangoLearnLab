@@ -3,10 +3,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import CustomUserForm
 from django.db.models import Q
 from .models import Article
 from .models import Book
+from .forms import ExampleForm  # Import your form
+
+def example_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process form data (save to database, send email, etc.)
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            print(f"Received Name: {name}, Email: {email}")
+            return render(request, 'success.html')  # Redirect or show success message
+    else:
+        form = ExampleForm()
+
+    return render(request, 'example_template.html', {'form': form})
 
 
 
