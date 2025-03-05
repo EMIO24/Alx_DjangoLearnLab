@@ -25,8 +25,23 @@ SECRET_KEY = 'django-insecure-#j^e09e!psw@-xc!0k+25c^7k%s9n7wbk%#a8j_79g*^^^^95)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['emio.com', '127.0.0.1'] # Add your production domain and local ip
 
+# ... other settings ...
+
+# Security Settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# HTTPS Settings
+SECURE_SSL_REDIRECT = False #redirect all http to https
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+#if you are using HSTS
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 
 # Application definition
 
@@ -38,7 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf',
-    'relationship_app'
+    'relationship_app',
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -49,8 +65,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware'
 ]
 
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://example.com') #add needed external sources.
+CSP_STYLE_SRC = ("'self'", 'https://example.com')
+CSP_IMG_SRC = ("'self'", 'data:')
 ROOT_URLCONF = 'LibraryProject.urls'
 
 TEMPLATES = [

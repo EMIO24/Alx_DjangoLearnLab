@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import Article
 from .models import Book
+from django.db.models import Q
+
+
 
 def book_list(request):
     books = Book.objects.all() # Retrieve all books from the database
@@ -46,4 +49,26 @@ def article_delete(request, pk):
     article.delete()
     return redirect('article_list')
 
+def book_search(request):
+    query = request.GET.get('q')
+    if query:
+        # Use Django's ORM to prevent SQL injection
+        books = Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+    else:
+        books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'books': books})
+
+def book_detail(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    return render(request, 'bookshelf/book_detail.html', {'book': book})
+
+def book_add(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm()
+    return render(request, 'bookshelf/book_form.html', {'form': form})
 # Create your views here.

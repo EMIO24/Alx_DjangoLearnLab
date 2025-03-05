@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     objects = CustomUserManager()  # Use the custom manager
 
-    
+
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
