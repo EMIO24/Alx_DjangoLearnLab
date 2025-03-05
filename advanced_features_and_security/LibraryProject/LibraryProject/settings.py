@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#j^e09e!psw@-xc!0k+25c^7k%s9n7wbk%#a8j_79g*^^^^95)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['emio.com', '127.0.0.1'] # Add your production domain and local ip
+ALLOWED_HOSTS = ['yourdomain.com', '127.0.0.1'] # Add your production domain and local ip
 
 # ... other settings ...
 
@@ -36,12 +36,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # HTTPS Settings
 SECURE_SSL_REDIRECT = False #redirect all http to https
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 #if you are using HSTS
-SECURE_HSTS_SECONDS = 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False
+SECURE_HSTS_SECONDS = 31536000 #one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # Application definition
 
