@@ -20,5 +20,4 @@ from django.urls import path, include  # <-- Make sure 'include' is imported
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("relationship_app.urls")),  # Include relationship_app URLs
-    path('', include('advanced_features_and_security.urls')),
 ]
