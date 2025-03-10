@@ -55,8 +55,10 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication', # Use token authentication by default
-        #'rest_framework.permissions.IsAuthenticated'
     ],
+   # You would use rest_framework.permissions.IsAuthenticated in your views.py files,
+    # not directly in settings.py. It's a permission class for view-specific access control.
+    # Example in views.py: permission_classes = [permissions.IsAuthenticated]
     # ... other DRF settings
 }
 
