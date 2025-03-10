@@ -17,4 +17,4 @@ class BookViewSet(viewsets.ModelViewSet):
     """
     queryset = Book.objects.all()  # This gets all the books from the database
     serializer_class = BookSerializer  # This tells Django how to convert the book data to JSON and back
-    permission_classes = [permissions.IsAuthenticated] # Only authenticated users can access this viewset.
+    permission_classes = permissions.IsAuthenticated # Only authenticated users can access this viewset.
