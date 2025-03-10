@@ -55,7 +55,7 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication', # Use token authentication by default
-        'rest_framework.permissions.IsAuthenticated'
+        #'rest_framework.permissions.IsAuthenticated'
     ],
     # ... other DRF settings
 }
