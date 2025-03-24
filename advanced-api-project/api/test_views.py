@@ -34,11 +34,13 @@ def test_create_book_with_authentication(self):
         self.assertEqual(Book.objects.count(), 1)
         self.assertEqual(Book.objects.first().created_by, self.user) # Assuming you have a 'created_by' field
         self.client.force_authenticate(user=None) # Remove authentication for subsequent tests if needed '''
+
 # api/test_views.py
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from .models import Book
+from api.models import Book
 from django.contrib.auth.models import User
+from rest_framework import status
 
 class BookAPITests(APITestCase):
     def setUp(self):
@@ -49,36 +51,45 @@ class BookAPITests(APITestCase):
         self.book2 = Book.objects.create(title='Book 2', author='Author B', publication_date='2024-02-02')
 
     def test_can_create_book(self):
+        # Log in the user
+        self.client.login(username='testuser', password='testpassword')
         book_data = {'title': 'New Book', 'author': 'New Author', 'publication_date': '2025-03-03'}
-        self.client.force_authenticate(user=self.user)
         response = self.client.post(self.list_create_url, book_data, format='json')
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 3)
         self.assertEqual(response.data['title'], 'New Book')
+        # Log out the user (optional, but good practice)
+        self.client.logout()
 
     def test_can_list_books(self):
         response = self.client.get(self.list_create_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2) # Assuming no pagination
 
     def test_can_retrieve_book(self):
         detail_url = reverse('book-detail', kwargs={'pk': self.book1.pk})
         response = self.client.get(detail_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['title'], 'Book 1')
 
     def test_can_update_book(self):
+        # Log in the user
+        self.client.login(username='testuser', password='testpassword')
         detail_url = reverse('book-detail', kwargs={'pk': self.book1.pk})
         updated_data = {'title': 'Updated Book 1'}
-        self.client.force_authenticate(user=self.user)
         response = self.client.put(detail_url, updated_data, format='json')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.title, 'Updated Book 1')
+        # Log out the user
+        self.client.logout()
 
     def test_can_delete_book(self):
+        # Log in the user
+        self.client.login(username='testuser', password='testpassword')
         detail_url = reverse('book-detail', kwargs={'pk': self.book2.pk})
-        self.client.force_authenticate(user=self.user)
         response = self.client.delete(detail_url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 1)
+        # Log out the user
+        self.client.logout()
