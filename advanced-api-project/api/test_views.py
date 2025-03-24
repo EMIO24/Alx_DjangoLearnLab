@@ -38,27 +38,53 @@ def test_create_book_with_authentication(self):
 # api/test_views.py
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from api.models import Book
+from api.models import Book, Author  # Make sure to import Author
 from django.contrib.auth.models import User
 from rest_framework import status
 
 class BookAPITests(APITestCase):
     def setUp(self):
         self.list_create_url = reverse('book-list') # URL for listing and creating books
-        self.detail_url_pattern = reverse('book-detail', kwargs={'pk': 1}) # URL pattern for individual book details
         self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.book1 = Book.objects.create(title='Book 1', author='Author A', publication_date='2023-01-01')
-        self.book2 = Book.objects.create(title='Book 2', author='Author B', publication_date='2024-02-02')
+        
+        # First create Author instances
+        self.author1 = Author.objects.create(name='Author A')
+        self.author2 = Author.objects.create(name='Author B')
+        
+        # Then create Book instances with Author objects
+        self.book1 = Book.objects.create(
+            title='Book 1', 
+            author=self.author1,  # Use the Author instance
+            publication_year='2023-01-01'
+        )
+        self.book2 = Book.objects.create(
+            title='Book 2', 
+            author=self.author2,  # Use the Author instance
+            publication_year='2024-02-02'
+        )
+        
+        # Initialize detail_url_pattern after creating books
+        self.detail_url_pattern = reverse('book-detail', kwargs={'pk': self.book1.pk})
 
     def test_can_create_book(self):
         # Log in the user
         self.client.login(username='testuser', password='testpassword')
-        book_data = {'title': 'New Book', 'author': 'New Author', 'publication_date': '2025-03-03'}
+        
+        # First create an author or use existing one
+        new_author = Author.objects.create(name='New Author')
+        
+        book_data = {
+            'title': 'New Book', 
+            'author': new_author.id,  # Send author ID in the request
+            'publication_year': '2025-03-03'
+        }
+        
         response = self.client.post(self.list_create_url, book_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 3)
         self.assertEqual(response.data['title'], 'New Book')
-        # Log out the user (optional, but good practice)
+        
+        # Log out the user
         self.client.logout()
 
     def test_can_list_books(self):
@@ -73,23 +99,26 @@ class BookAPITests(APITestCase):
         self.assertEqual(response.data['title'], 'Book 1')
 
     def test_can_update_book(self):
-        # Log in the user
         self.client.login(username='testuser', password='testpassword')
         detail_url = reverse('book-detail', kwargs={'pk': self.book1.pk})
-        updated_data = {'title': 'Updated Book 1'}
+        
+        # For update, you might need to provide all required fields
+        updated_data = {
+            'title': 'Updated Book 1',
+            'author': self.author1.id,  # Include author ID
+            'publication_year': '2023-01-01'
+        }
+        
         response = self.client.put(detail_url, updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.title, 'Updated Book 1')
-        # Log out the user
         self.client.logout()
 
     def test_can_delete_book(self):
-        # Log in the user
         self.client.login(username='testuser', password='testpassword')
         detail_url = reverse('book-detail', kwargs={'pk': self.book2.pk})
         response = self.client.delete(detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 1)
-        # Log out the user
         self.client.logout()
