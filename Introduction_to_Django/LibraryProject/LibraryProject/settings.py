@@ -77,14 +77,16 @@ WSGI_APPLICATION = 'LibraryProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sakila',
+        'NAME': 'alx_book_store',
         'USER': 'EMIO24',
         'PASSWORD': 'Passion13.@1',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': '127.0.0.1',  # Use IP instead of socket
+        'PORT': '3306',       # Default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
