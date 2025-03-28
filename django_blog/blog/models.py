@@ -19,6 +19,4 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
-
-# Ensure you import ImageField: from django.db import models
 # Create your models here.
