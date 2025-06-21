@@ -1,0 +1,36 @@
+# .gitignore
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env/
+
+# Python bytecode and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Django specific
+*.sqlite3
+/media/
+
+# Development/IDE specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sensitive Data / Local Settings
+*.env
+.env.local
+settings_local.py
